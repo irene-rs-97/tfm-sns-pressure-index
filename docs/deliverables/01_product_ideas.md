@@ -1,6 +1,4 @@
-# Delivery 1 – Product Ideas
-
-*(Formal, academic and technical English version)*
+# Delivery 1 - Product Ideas
 
 ## Context
 
