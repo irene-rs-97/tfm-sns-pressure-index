@@ -1,6 +1,6 @@
-# Delivery 4 – Analysis Design and Modelling Strategy
+# Delivery 4 - Analysis Design and Modelling Strategy
 
-> **Revision note (response to feedback received):** the feedback points to two specific mismatches between what was intended to be produced and the data available – a weekly table cannot justify predictions at 24–72 hours, and an annual average occupancy does not represent real bed availability for recommending transfers –; a serious methodological problem in the episode-level scoring approach (splitting by `episodio_id` does not prevent several episodes of the same patient from appearing simultaneously in training and test; a patient identifier and group-based validation, preferably also temporal, are required); and the risk of training and validating with synthetic readmissions, which may lead the model to reproduce the rules used to generate the label instead of demonstrating real clinical validity. It also asks to prioritise a single module and to strictly align its granularity, horizon and source of truth. This document applies those four points: the detailed analysis and modelling focuses on **Module 1 (demand forecasting)**, with an explicit verification that its horizon (4–8 weeks) is consistent with its granularity (weekly) – predictions at 24–72 hours on weekly data are never proposed. Modules 2 and 3 are moved to an annex of conceptual, non-implemented design, in which the methodological corrections indicated (patient identifier and group/temporal validation, and the risk of circularity with synthetic labels) are explicitly incorporated in case they are activated in the future.
+> **Revision note (response to feedback received):** the feedback points to two specific mismatches between what was intended to be produced and the data available - a weekly table cannot justify predictions at 24–72 hours, and an annual average occupancy does not represent real bed availability for recommending transfers -; a serious methodological problem in the episode-level scoring approach (splitting by `episodio_id` does not prevent several episodes of the same patient from appearing simultaneously in training and test; a patient identifier and group-based validation, preferably also temporal, are required); and the risk of training and validating with synthetic readmissions, which may lead the model to reproduce the rules used to generate the label instead of demonstrating real clinical validity. It also asks to prioritise a single module and to strictly align its granularity, horizon and source of truth. This document applies those four points: the detailed analysis and modelling focuses on **Module 1 (demand forecasting)**, with an explicit verification that its horizon (4–8 weeks) is consistent with its granularity (weekly) - predictions at 24–72 hours on weekly data are never proposed. Modules 2 and 3 are moved to an annex of conceptual, non-implemented design, in which the methodological corrections indicated (patient identifier and group/temporal validation, and the risk of circularity with synthetic labels) are explicitly incorporated in case they are activated in the future.
 
 ---
 
@@ -14,9 +14,9 @@ SNS hospitals manage the planning of care demand in a predominantly reactive man
 
 | Module | End user | Decision supported | Status |
 |---|---|---|---|
-| **M1 – Demand** | Medical directorate / bed management | Plan staffing 4–8 weeks in advance | **MVP of this deliverable** |
-| M2 – Transfer | Medical directorate of a health area / network planning | Prioritise the pathologies/CCAA in which to reinforce specialised capacity ahead of the season | Conceptual design, see Annex |
-| M3 – Readmission risk | Medical directorate / care quality | Prioritise the segments in which to reinforce discharge or post-discharge follow-up protocols | Conceptual design, see Annex |
+| **M1 - Demand** | Medical directorate / bed management | Plan staffing 4–8 weeks in advance | **MVP of this deliverable** |
+| M2 - Transfer | Medical directorate of a health area / network planning | Prioritise the pathologies/CCAA in which to reinforce specialised capacity ahead of the season | Conceptual design, see Annex |
+| M3 - Readmission risk | Medical directorate / care quality | Prioritise the segments in which to reinforce discharge or post-discharge follow-up protocols | Conceptual design, see Annex |
 
 Module 1 does not operate in real time: the source (EMH) is published with a delay and at aggregated granularity. Its value lies in **structural planning several weeks ahead**, not in day-to-day operational alerting – for this reason the horizon is kept at 4–8 weeks, and a 24–72-hour horizon, which would require daily or hourly updated data that the EMH does not provide, is at no point proposed.
 
@@ -53,7 +53,7 @@ The EDA questions for Modules 2 and 3 are maintained in the Annex, without being
 
 | Module | Alternative | Type | Why it is proposed | Main limitation |
 |---|---|---|---|---|
-| **M1** | Naive baseline + SARIMA/Prophet | Time-series forecasting | The only MVP module; a 4–8-week horizon is consistent with the weekly granularity of the source | Prophet may over-smooth peaks; SARIMA requires stationarity |
+| **M1** | Naive baseline + SARIMA/Prophet | Time-series forecasting | The only MVP module; a 4-8-week horizon is consistent with the weekly granularity of the source | Prophet may over-smooth peaks; SARIMA requires stationarity |
 
 The model approach for M2 and M3 (regression on aggregated rates, with SHAP explainability in M3) is preserved in the Annex as a conceptual design, with the methodological corrections required by the review, but is not implemented in this deliverable.
 
