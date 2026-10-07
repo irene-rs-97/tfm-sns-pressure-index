@@ -1,4 +1,4 @@
-# Delivery 2 – Project Idea Selection and Analysis of Required Data
+# Delivery 2 - Project Idea Selection and Analysis of Required Data
 
 ---
 
