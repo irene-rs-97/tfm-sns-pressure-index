@@ -1,6 +1,6 @@
-# Delivery 3 – Data Model Design and Gold Layer of the Project
+# Delivery 3 - Data Model Design and Gold Layer of the Project
 
-> **Revision note (response to feedback received):** the feedback indicates that several gold tables required levels of granularity that real public sources do not guarantee (weekly demand by department, individual episodes, biomarkers, 30-day readmission); that filling those gaps with synthetic data makes it possible to demonstrate the pipeline but not to sustain clinical conclusions or a real decision-support system; and that the three modules still maintained an excessively broad scope. Accordingly, this document reduces the deliverable to **a single MVP built entirely on real data** (Module 1 – demand forecasting), incorporates an explicit phase of **validation of real fields and frequencies in the EMH and ESCRI** before closing the design of the gold layer, and reclassifies Modules 2 and 3 as **conceptual design, not implemented**, conditional on that validation confirming that a real (non-synthetic) source exists capable of supporting them. The data architecture (layers, format, cleaning principles) is retained because it was not what was called into question; what is adjusted is the product promise, so that it matches the real evidence available.
+> **Revision note (response to feedback received):** the feedback indicates that several gold tables required levels of granularity that real public sources do not guarantee (weekly demand by department, individual episodes, biomarkers, 30-day readmission); that filling those gaps with synthetic data makes it possible to demonstrate the pipeline but not to sustain clinical conclusions or a real decision-support system; and that the three modules still maintained an excessively broad scope. Accordingly, this document reduces the deliverable to **a single MVP built entirely on real data** (Module 1 - demand forecasting), incorporates an explicit phase of **validation of real fields and frequencies in the EMH and ESCRI** before closing the design of the gold layer, and reclassifies Modules 2 and 3 as **conceptual design, not implemented**, conditional on that validation confirming that a real (non-synthetic) source exists capable of supporting them. The data architecture (layers, format, cleaning principles) is retained because it was not what was called into question; what is adjusted is the product promise, so that it matches the real evidence available.
 
 ---
 
@@ -23,9 +23,9 @@ The MVP selection criterion is therefore: **the module whose real source is alre
 
 | Module | What it would address | Granularity | Primary source | Status in this deliverable |
 |---|---|---|---|---|
-| **1. Care demand forecasting** | Projection of urgent/scheduled admissions, 4–8 weeks ahead, by autonomous community (CCAA) (and by department if the validation in section 2 confirms it) | Week × (department) × CCAA | EMH, ESCRI | **MVP – in development, real data** |
-| **2. Transfer prioritisation index** | Identify which pathology × CCAA combinations concentrate the greatest structural transfer pressure | Pathology (ICD-10, 2 digits) × CCAA × year | EMH, ESCRI, DRG | **Conceptual design – not implemented, real source pending validation** |
-| **3. Readmission risk index at discharge** | Stratify which pathology × age group × CCAA combinations concentrate the highest 30-day readmission risk | Pathology × age group × CCAA × year | EMH, DRG, iCMBD | **Conceptual design – not implemented, real source pending validation** |
+| **1. Care demand forecasting** | Projection of urgent/scheduled admissions, 4–8 weeks ahead, by autonomous community (CCAA) (and by department if the validation in section 2 confirms it) | Week × (department) × CCAA | EMH, ESCRI | **MVP - in development, real data** |
+| **2. Transfer prioritisation index** | Identify which pathology × CCAA combinations concentrate the greatest structural transfer pressure | Pathology (ICD-10, 2 digits) × CCAA × year | EMH, ESCRI, DRG | **Conceptual design - not implemented, real source pending validation** |
+| **3. Readmission risk index at discharge** | Stratify which pathology × age group × CCAA combinations concentrate the highest 30-day readmission risk | Pathology × age group × CCAA × year | EMH, DRG, iCMBD | **Conceptual design - not implemented, real source pending validation** |
 
 The design of Modules 2 and 3 is preserved in full in section 10 (formerly sections 5.2/5.3) because the feasibility analysis already carried out has value and may be activated if source validation supports it – but it is not part of what this TFM promises to deliver as a functional system.
 
@@ -33,8 +33,8 @@ The design of Modules 2 and 3 is preserved in full in section 10 (formerly secti
 
 | Source | Type of information | Use in the project |
 |---|---|---|
-| Hospital Morbidity Survey (EMH) – INE, series 2014–2023 | Discharges with actual discharge date, ICD-10 diagnosis, admission modality, age, sex, CCAA | Primary MVP source: reconstruction of the weekly admissions series |
-| Statistics of Specialised Care Centres (formerly ESCRI) – Ministry of Health, series 2014–2023 | Annual snapshot of installed/operating beds, technological resources and staff by centre | Static annual structural context for the MVP (network capacity) |
+| Hospital Morbidity Survey (EMH) - INE, series 2014–2023 | Discharges with actual discharge date, ICD-10 diagnosis, admission modality, age, sex, CCAA | Primary MVP source: reconstruction of the weekly admissions series |
+| Statistics of Specialised Care Centres (formerly ESCRI) - Ministry of Health, series 2014–2023 | Annual snapshot of installed/operating beds, technological resources and staff by centre | Static annual structural context for the MVP (network capacity) |
 
 DRG and iCMBD are documented as potential sources for a future extension (section 10), but are not used in the current MVP.
 
@@ -109,13 +109,13 @@ The conceptual design of Modules 2 and 3 (section 10) does not generate files in
 
 | Field | Description | Type | Source | Mandatory | Remarks |
 |---|---|---|---|---|---|
-| `anio` | Year of the record | int | EMH | Yes | – |
-| `semana_epidemiologica` | ISO week of the year | int | EMH | Yes | – |
-| `ccaa_codigo` | INE code of the CCAA | str | EMH | Yes | – |
+| `anio` | Year of the record | int | EMH | Yes | - |
+| `semana_epidemiologica` | ISO week of the year | int | EMH | Yes | - |
+| `ccaa_codigo` | INE code of the CCAA | str | EMH | Yes | - |
 | `servicio` | Hospital department | str | EMH | Conditional | Only if checklist 2.1 confirms the real breakdown |
 | `ingresos_urgentes` | Number of urgent admissions in the week | int | EMH | Yes | Target variable |
-| `ingresos_programados` | Number of scheduled admissions in the week | int | EMH | Yes | – |
-| `camas_totales_ccaa` | Structural capacity of the CCAA (annual context, not real-time occupancy) | int | ESCRI | Yes | – |
+| `ingresos_programados` | Number of scheduled admissions in the week | int | EMH | Yes | - |
+| `camas_totales_ccaa` | Structural capacity of the CCAA (annual context, not real-time occupancy) | int | ESCRI | Yes | - |
 
 The field dictionary for Modules 2 and 3 is kept in section 10, with the same label of "conceptual design, not implemented".
 
@@ -188,7 +188,7 @@ Neither would produce a recommendation for a specific patient at a specific mome
 
 | Source | Type of information | Intended use |
 |---|---|---|
-| Diagnosis-Related Groups (DRG) – SNS | Average length of stay and reference cost by diagnosis | Length-of-stay deviation variable (severity/complexity) |
+| Diagnosis-Related Groups (DRG) - SNS | Average length of stay and reference cost by diagnosis | Length-of-stay deviation variable (severity/complexity) |
 | iCMBD (indicators and analysis axes of the CMBD, Minimum Basic Data Set) – Ministry of Health | Official aggregated indicators: readmission rate, mortality, average length of stay, by CCAA/hospital/diagnosis | Real target variable of M3, if its breakdown reaches pathology × CCAA |
 
 **Open point of attention, unresolved:** it remains to be confirmed whether iCMBD breaks down the readmission rate by pathology × CCAA simultaneously, or only along one of the two axes, and whether access is through interactive query or bulk download. Until this is confirmed, M3 does not progress beyond conceptual design.
@@ -212,7 +212,7 @@ Neither would produce a recommendation for a specific patient at a specific mome
 | `camas_totales_ccaa` | int | Structural capacity of the CCAA – **annual context, never real bed availability for deciding a transfer** | ESCRI |
 | `score_presion_derivacion` | float | Output variable: combined index | Derived (model) |
 
-**`gold_riesgo_reingreso.csv` (M3)** – key `(anio, ccaa_codigo, patologia_cie10, grupo_edad)`:
+**`gold_riesgo_reingreso.csv` (M3)** - key `(anio, ccaa_codigo, patologia_cie10, grupo_edad)`:
 
 | Field | Type | Description | Source |
 |---|---|---|---|
@@ -221,7 +221,7 @@ Neither would produce a recommendation for a specific patient at a specific mome
 | `patologia_cie10` | str | Diagnostic group | EMH |
 | `grupo_edad` | str | Ten-year age band | EMH |
 | `altas_totales` | int | Number of discharges in the segment | EMH |
-| `tasa_reingreso_30d` | float | Target variable: official 30-day readmission rate – **must come from an already aggregated, real indicator (iCMBD); if that granularity is not confirmed, the module cannot be sustained with synthetic data** | iCMBD |
+| `tasa_reingreso_30d` | float | Target variable: official 30-day readmission rate - **must come from an already aggregated, real indicator (iCMBD); if that granularity is not confirmed, the module cannot be sustained with synthetic data** | iCMBD |
 | `estancia_media_dias` | float | Actual average length of stay of the segment | EMH |
 | `desviacion_estancia` | float | Actual stay vs. expected DRG stay | DRG (derived) |
 | `mortalidad_intrahosp_pct` | float | % of discharges due to death in the segment | EMH |
